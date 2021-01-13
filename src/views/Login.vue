@@ -12,7 +12,7 @@
                                 placeholder="use: eve.holt@reqres.in"
                                 class="input"
                                 v-model="email"
-                            />
+                            >
                         </div>
                     </div>
                     <div class="field">
@@ -23,8 +23,11 @@
                                 placeholder="any password will do ..."
                                 class="input"
                                 v-model="password"
-                            />
+                            >
                         </div>
+                    </div>
+                    <div class="field" v-if="errorText">
+                        <p class="notification is-danger">{{ errorText }}</p>
                     </div>
                     <div class="field has-text-right">
                         <button type="submit" class="button is-info">
@@ -45,6 +48,7 @@ export default {
     data() {
         return {
             email: "",
+            errorText: "",
             password: "",
         };
     },
@@ -66,7 +70,12 @@ export default {
                         //redirect the user
                         this.$router.push({name: 'game'})
                     }
-                });
+                })
+                .catch((error) => {
+                    this.errorText = 'Invalid login credentials'
+                    console.log(error);
+
+                })
         },
     },
 };
