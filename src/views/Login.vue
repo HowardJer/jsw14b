@@ -12,7 +12,7 @@
                                 placeholder="use: eve.holt@reqres.in"
                                 class="input"
                                 v-model="email"
-                            >
+                            />
                         </div>
                     </div>
                     <div class="field">
@@ -23,7 +23,7 @@
                                 placeholder="any password will do ..."
                                 class="input"
                                 v-model="password"
-                            >
+                            />
                         </div>
                     </div>
                     <div class="field" v-if="errorText">
@@ -32,6 +32,12 @@
                     <div class="field has-text-right">
                         <button type="submit" class="button is-info">
                             Sign in
+                            <i :class="[
+                                'fas', 
+                                [ loading ? 'fa-spinner fa-spin' : 'fa-sign-in-alt' ], 
+                                'px-2'
+                                ]">
+                            </i>
                         </button>
                     </div>
                 </form>
@@ -49,11 +55,18 @@ export default {
         return {
             email: "",
             errorText: "",
+            loading: false,
             password: "",
         };
     },
+     created() {
+        if(!this.token) {
+            this.$router.push('/login');
+        }
+    },
     methods: {
         login() {
+            this.loading = true;
             axios
                 .request({
                     method: "post",
@@ -66,16 +79,16 @@ export default {
                 .then((response) => {
                     if (response.status === 200) {
                         //stash token in a cookie
-                        this.$store.commit('setToken', response.data.token);                        
+                        this.$store.commit("setToken", response.data.token);
                         //redirect the user
-                        this.$router.push({name: 'game'})
+                        this.$router.push({ name: "game" });
                     }
+                    this.loading = false;
                 })
                 .catch((error) => {
-                    this.errorText = 'Invalid login credentials'
+                    this.errorText = "Invalid login credentials";
                     console.log(error);
-
-                })
+                });
         },
     },
 };
